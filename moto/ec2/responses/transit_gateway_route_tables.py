@@ -83,6 +83,20 @@ class TransitGatewayRouteTable(BaseResponse):
         template = self.response_template(SEARCH_TRANSIT_GATEWAY_ROUTES_RESPONSE)
         return template.render(transit_gateway_routes=transit_gateway_routes)
 
+    def get_transit_gateway_route_table_associations(self):
+        transit_gateway_route_table_id = self._get_param("TransitGatewayRouteTableId")
+        filters = filters_from_querystring(self.querystring)
+        transit_gateway_route_table_associations = self.ec2_backend.get_all_transit_gateway_route_table_associations(transit_gateway_route_table_id, filters)
+        template = self.response_template(GET_TRANSIT_GATEWAY_ROUTE_TABLE_ASSOCIATIONS_RESPONSE)
+        return template.render(transit_gateway_route_table_associations=transit_gateway_route_table_associations)
+
+    def get_transit_gateway_route_table_propagations(self):
+        transit_gateway_route_table_id = self._get_param("TransitGatewayRouteTableId")
+        filters = filters_from_querystring(self.querystring)
+        transit_gateway_route_table_propagations = self.ec2_backend.get_all_transit_gateway_route_table_propagations(transit_gateway_route_table_id, filters)
+        template = self.response_template(GET_TRANSIT_GATEWAY_ROUTE_TABLE_PROPAGATIONS_RESPONSE)
+        return template.render(transit_gateway_route_table_propagations=transit_gateway_route_table_propagations)
+
 
 CREATE_TRANSIT_GATEWAY_ROUTE_TABLE_RESPONSE = """<CreateTransitGatewayRouteTableResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
     <requestId>3a495d25-08d4-466d-822e-477c9b1fc606</requestId>
@@ -179,9 +193,47 @@ SEARCH_TRANSIT_GATEWAY_ROUTES_RESPONSE = """<?xml version="1.0" encoding="UTF-8"
             <destinationCidrBlock>{{ route['destinationCidrBlock'] }}</destinationCidrBlock>
             <state>{{ route['state'] }}</state>
             <type>{{ route['type'] }}</type>
+            <state>active</state>
+            {% if route[type] != 'blackhole' %}
+            <transitGatewayAttachments>
+                <item>
+                    <resourceId>{{ route['transitGatewayAttachments']['resourceId'] }}</resourceId>
+                    <resourceType>{{ route['transitGatewayAttachments']['resourceType'] }}</resourceType>
+                    <transitGatewayAttachmentId>{{ route['transitGatewayAttachments']['transitGatewayAttachmentId'] }}</transitGatewayAttachmentId>
+                </item>
+            </transitGatewayAttachments>
+            {% endif %}
         </item>
         {% endfor %}
     </routeSet>
     <additionalRoutesAvailable>false</additionalRoutesAvailable>
 </SearchTransitGatewayRoutesResponse>
 """
+
+GET_TRANSIT_GATEWAY_ROUTE_TABLE_ASSOCIATIONS_RESPONSE = """<GetTransitGatewayRouteTableAssociationsResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
+    <requestId>92fdc91d-c374-4217-b2b4-33f2fb0a2be7</requestId>
+    <associations>
+        {% for association in transit_gateway_route_table_associations %}
+        <item>
+            <resourceId>{{ association.route_table_association.resourceId }}</resourceId>
+            <resourceType>{{ association.route_table_association.resourceType }}</resourceType>
+            <state>{{ association.route_table_association.state }}</state>
+            <transitGatewayAttachmentId>{{ association.route_table_association.transitGatewayAttachmentId }}</transitGatewayAttachmentId>
+        </item>
+        {% endfor %}
+    </associations>
+</GetTransitGatewayRouteTableAssociationsResponse>"""
+
+GET_TRANSIT_GATEWAY_ROUTE_TABLE_PROPAGATIONS_RESPONSE = """<GetTransitGatewayRouteTablePropagationsResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
+    <requestId>541bc42d-9ed9-4aef-a5f7-2ea32fbdec16</requestId>
+    <transitGatewayRouteTablePropagations>
+        {% for propagation in transit_gateway_route_table_propagations %}
+        <item>
+            <resourceId>{{ propagation.route_table_propagation.resourceId }}</resourceId>
+            <resourceType>{{ propagation.route_table_propagation.resourceType }}</resourceType>
+            <state>{{ propagation.route_table_propagation.state }}</state>
+            <transitGatewayAttachmentId>{{ propagation.route_table_propagation.transitGatewayAttachmentId }}</transitGatewayAttachmentId>
+        </item>
+        {% endfor %}
+    </transitGatewayRouteTablePropagations>
+</GetTransitGatewayRouteTablePropagationsResponse>"""
