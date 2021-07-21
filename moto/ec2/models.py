@@ -6231,7 +6231,7 @@ class TransitGatewayRouteTableBackend(object):
                 if values is not None:
                     for transit_gateway_route_table in transit_gateway_route_tables:
                         if (len(attrs) <= 2 and getattr(transit_gateway_route_table, attrs[1]) in values) or \
-                        (len(attrs) == 3 and getattr(transit_gateway_route_table, attrs[1]).get(attrs[2]) in values):
+                           (len(attrs) == 3 and getattr(transit_gateway_route_table, attrs[1]).get(attrs[2]) in values):
                             result.append(transit_gateway_route_table)
         return transit_gateway_route_tables if not filters else result
 
@@ -6265,7 +6265,7 @@ class TransitGatewayRouteTableBackend(object):
                 if values is not None:
                     for transit_gateway_route_table in transit_gateway_route_tables:
                         if (len(attrs) <= 2 and getattr(transit_gateway_route_table, attrs[1]) in values) or \
-                        (len(attrs) == 3 and getattr(transit_gateway_route_table, attrs[1]).get(attrs[2]) in values):
+                           (len(attrs) == 3 and getattr(transit_gateway_route_table, attrs[1]).get(attrs[2]) in values):
                             result.append(transit_gateway_route_table)
         return transit_gateway_route_tables if not filters else result
 
