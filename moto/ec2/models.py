@@ -6044,7 +6044,6 @@ class TransitGatewayRouteTable(TaggedEC2Resource):
         default_association_route_table=False,
         default_propagation_route_table=False,
     ):
-        print("default_association_route_table::", default_association_route_table)
         self.ec2_backend = backend
         self.id = random_transit_gateway_route_table_id()
         self.transit_gateway_id = transit_gateway_id
@@ -6080,7 +6079,6 @@ class TransitGatewayRouteTableBackend(object):
         default_association_route_table=False,
         default_propagation_route_table=False,
     ):
-        print("default_association_route_table::", default_association_route_table)
         transit_gateways_route_table = TransitGatewayRouteTable(
             self,
             transit_gateway_id=transit_gateway_id,
@@ -6151,7 +6149,6 @@ class TransitGatewayRouteTableBackend(object):
             },
             "type": "TODO",
         }
-        print("transit_gateways_route_table.routes[destination_cidr_block]::", transit_gateways_route_table.routes[destination_cidr_block])
         return transit_gateways_route_table
 
     def delete_transit_gateway_route(
@@ -6204,6 +6201,9 @@ class TransitGatewayRouteTableBackend(object):
             'state': 'enabled',
             'transitGatewayAttachmentId': transit_gateway_attachment_id
         }
+
+    def disable_route_table_propagation(self, transit_gateway_route_table_id):
+        self.transit_gateways_route_tables[transit_gateway_route_table_id].route_table_propagation = {}
 
     def get_all_transit_gateway_route_table_associations(self, transit_gateway_route_table_id=None, filters=None):
         transit_gateway_route_tables = self.transit_gateways_route_tables.values()
@@ -6428,6 +6428,11 @@ class TransitGatewayAttachmentBackend(object):
                     ]
 
         return transit_gateway_attachments
+    
+    def delete_transit_gateway_vpc_attachment(self, transit_gateway_attachment_id=None):
+        self.transit_gateway_attachments[transit_gateway_attachment_id].state = "deleted"
+        transit_gateway_attachment = self.transit_gateway_attachments.pop(transit_gateway_attachment_id)
+        return transit_gateway_attachment
 
     def modify_transit_gateway_vpc_attachment(
         self,
@@ -6461,6 +6466,9 @@ class TransitGatewayAttachmentBackend(object):
             "transitGatewayRouteTableId": transit_gateway_route_table_id
         }
 
+    def disable_attachment_propagation(self, transit_gateway_attachment_id=None):
+        self.transit_gateway_attachments[transit_gateway_attachment_id].association["state"] = "disabled"
+
 
 class TransitGatewayRelations(object):
     # this class is for TransitGatewayAssociation and TransitGatewayPropagation
@@ -6491,6 +6499,14 @@ class TransitGatewayRelationsBackend(object):
         self.set_route_table_propagation(transit_gateway_attachment_id, transit_gateway_route_table_id)
         self.set_attachment_propagation(transit_gateway_attachment_id, transit_gateway_route_table_id)
         self.transit_gateway_propagations[transit_gateway_attachment_id] = transit_gateway_propagation
+
+        return transit_gateway_propagation
+
+    def disable_transit_gateway_route_table_propagation(self, transit_gateway_attachment_id=None, transit_gateway_route_table_id=None):
+        self.disable_route_table_propagation(transit_gateway_route_table_id=transit_gateway_route_table_id)
+        self.disable_attachment_propagation(transit_gateway_attachment_id=transit_gateway_attachment_id)
+        self.transit_gateway_propagations[transit_gateway_attachment_id].state = 'disabled'
+        transit_gateway_propagation = self.transit_gateway_propagations.pop(transit_gateway_attachment_id)
 
         return transit_gateway_propagation
 
