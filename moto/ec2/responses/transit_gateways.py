@@ -18,10 +18,17 @@ class TransitGateways(BaseResponse):
 
         # creating default route table
         transit_gateway_route_table = self.ec2_backend.create_transit_gateway_route_table(
-            transit_gateway_id=transit_gateway.id, tags={}, default_association_route_table=True, default_propagation_route_table=True
+            transit_gateway_id=transit_gateway.id,
+            tags={},
+            default_association_route_table=True,
+            default_propagation_route_table=True,
         )
-        transit_gateway.options['AssociationDefaultRouteTableId'] = transit_gateway_route_table.id
-        transit_gateway.options['PropagationDefaultRouteTableId'] = transit_gateway_route_table.id
+        transit_gateway.options[
+            "AssociationDefaultRouteTableId"
+        ] = transit_gateway_route_table.id
+        transit_gateway.options[
+            "PropagationDefaultRouteTableId"
+        ] = transit_gateway_route_table.id
 
         template = self.response_template(CREATE_TRANSIT_GATEWAY_RESPONSE)
         return template.render(transit_gateway=transit_gateway)

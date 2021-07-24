@@ -86,16 +86,28 @@ class TransitGatewayRouteTable(BaseResponse):
     def get_transit_gateway_route_table_associations(self):
         transit_gateway_route_table_id = self._get_param("TransitGatewayRouteTableId")
         filters = filters_from_querystring(self.querystring)
-        transit_gateway_route_table_associations = self.ec2_backend.get_all_transit_gateway_route_table_associations(transit_gateway_route_table_id, filters)
-        template = self.response_template(GET_TRANSIT_GATEWAY_ROUTE_TABLE_ASSOCIATIONS_RESPONSE)
-        return template.render(transit_gateway_route_table_associations=transit_gateway_route_table_associations)
+        transit_gateway_route_table_associations = self.ec2_backend.get_all_transit_gateway_route_table_associations(
+            transit_gateway_route_table_id, filters
+        )
+        template = self.response_template(
+            GET_TRANSIT_GATEWAY_ROUTE_TABLE_ASSOCIATIONS_RESPONSE
+        )
+        return template.render(
+            transit_gateway_route_table_associations=transit_gateway_route_table_associations
+        )
 
     def get_transit_gateway_route_table_propagations(self):
         transit_gateway_route_table_id = self._get_param("TransitGatewayRouteTableId")
         filters = filters_from_querystring(self.querystring)
-        transit_gateway_route_table_propagations = self.ec2_backend.get_all_transit_gateway_route_table_propagations(transit_gateway_route_table_id, filters)
-        template = self.response_template(GET_TRANSIT_GATEWAY_ROUTE_TABLE_PROPAGATIONS_RESPONSE)
-        return template.render(transit_gateway_route_table_propagations=transit_gateway_route_table_propagations)
+        transit_gateway_route_table_propagations = self.ec2_backend.get_all_transit_gateway_route_table_propagations(
+            transit_gateway_route_table_id, filters
+        )
+        template = self.response_template(
+            GET_TRANSIT_GATEWAY_ROUTE_TABLE_PROPAGATIONS_RESPONSE
+        )
+        return template.render(
+            transit_gateway_route_table_propagations=transit_gateway_route_table_propagations
+        )
 
 
 CREATE_TRANSIT_GATEWAY_ROUTE_TABLE_RESPONSE = """<CreateTransitGatewayRouteTableResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
