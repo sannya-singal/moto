@@ -6134,22 +6134,26 @@ class TransitGatewayRouteTableBackend(object):
         transit_gateway_attachment_id=None,
         blackhole=False,
     ):
-        transit_gateways_route_table = self.transit_gateways_route_tables[
-            transit_gateway_route_table_id
-        ]
+        transit_gateways_route_table = self.transit_gateways_route_tables.get(transit_gateway_route_table_id)
+        transit_gateway_attachment = self.transit_gateway_attachments.get(transit_gateway_attachment_id)
+
         transit_gateways_route_table.routes[destination_cidr_block] = {
             "destinationCidrBlock": destination_cidr_block,
             "prefixListId": "",
             "state": "blackhole" if blackhole else "active",
-            # TODO: needs to be fixed once we have support for transit gateway attachments
-            "transitGatewayAttachments": {
-                "resourceId": "TODO",
-                "resourceType": "TODO",
-                "transitGatewayAttachmentId": transit_gateway_attachment_id,
-            },
-            "type": "TODO",
+            "type": "static"
         }
-        return transit_gateways_route_table
+
+        if transit_gateway_attachment:
+            transit_gateway_attachment_dict = {
+                "transitGatewayAttachments": {
+                    "resourceId": transit_gateway_attachment.resource_id,
+                    "resourceType": transit_gateway_attachment.resource_type,
+                    "transitGatewayAttachmentId": transit_gateway_attachment_id,
+                }
+            }
+            transit_gateways_route_table.routes[destination_cidr_block].update(transit_gateway_attachment_dict)
+        return transit_gateways_route_table.routes[destination_cidr_block]
 
     def delete_transit_gateway_route(
         self, transit_gateway_route_table_id, destination_cidr_block,
@@ -6163,12 +6167,8 @@ class TransitGatewayRouteTableBackend(object):
     def search_transit_gateway_routes(self, transit_gateway_route_table_id, filters, max_results=None):
         transit_gateway_route_table = self.transit_gateways_route_tables.get(transit_gateway_route_table_id)
         if not transit_gateway_route_table:
-<<<<<<< HEAD
-            raise
-
-=======
             return []
->>>>>>> added support for modify-transit-gateway-vpc-attachment
+
         attr_pairs = (
             ("type", "type"),
             ("state", "state"),
