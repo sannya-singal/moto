@@ -206,8 +206,6 @@ DESCRIBE_TRANSIT_GATEWAY_VPC_ATTACHMENTS = """<DescribeTransitGatewayVpcAttachme
     </transitGatewayVpcAttachments>
 </DescribeTransitGatewayVpcAttachmentsResponse>
 """
-<<<<<<< HEAD
-=======
 
 
 MODIFY_TRANSIT_GATEWAY_VPC_ATTACHMENTS = """<ModifyTransitGatewayVpcAttachmentResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
@@ -296,4 +294,3 @@ TRANSIT_GATEWAY_PROPAGATION = """<EnableTransitGatewayRouteTablePropagationRespo
     </propagation>
 </EnableTransitGatewayRouteTablePropagationResponse>
 """
->>>>>>> ee8cb6f1... added support for transit-gateway-route-table-propagation
