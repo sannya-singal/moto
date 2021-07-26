@@ -236,10 +236,10 @@ GET_TRANSIT_GATEWAY_ROUTE_TABLE_ASSOCIATIONS_RESPONSE = """<GetTransitGatewayRou
     <associations>
         {% for association in transit_gateway_route_table_associations %}
         <item>
-            <resourceId>{{ association.route_table_association.resourceId }}</resourceId>
-            <resourceType>{{ association.route_table_association.resourceType }}</resourceType>
-            <state>{{ association.route_table_association.state }}</state>
-            <transitGatewayAttachmentId>{{ association.route_table_association.transitGatewayAttachmentId }}</transitGatewayAttachmentId>
+            <resourceId>{{ association.resourceId }}</resourceId>
+            <resourceType>{{ association.resourceType }}</resourceType>
+            <state>{{ association.state }}</state>
+            <transitGatewayAttachmentId>{{ association.transitGatewayAttachmentId }}</transitGatewayAttachmentId>
         </item>
         {% endfor %}
     </associations>
