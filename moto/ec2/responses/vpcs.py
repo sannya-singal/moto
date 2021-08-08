@@ -491,7 +491,7 @@ CREATE_VPC_END_POINT = """ <CreateVpcEndpointResponse xmlns="http://monitoring.a
             </item>
         {% endfor %}
         </tagSet>
-        <creationTimestamp>{{ vpc_end_point.created_at }}</creationTimestamp>
+        <creationTimestamp>{{ vpc_end_point.create_time }}</creationTimestamp>
     </vpcEndpoint>
 </CreateVpcEndpointResponse>"""
 
@@ -588,7 +588,7 @@ DESCRIBE_VPC_ENDPOINT_RESPONSE = """<DescribeVpcEndpointsResponse xmlns="http://
                 {% endfor %}
                 </tagSet>
                 <ownerId>{{ account_id }}</ownerId>
-                <creationTimestamp>{{ vpc_end_point.created_at }}</creationTimestamp>
+                <creationTimestamp>{{ vpc_end_point.create_time }}</creationTimestamp>
             </item>
         {% endfor %}
     </vpcEndpointSet>

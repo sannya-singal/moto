@@ -4387,6 +4387,10 @@ class VPCEndPoint(TaggedEC2Resource):
     def created_at(self):
         return iso_8601_datetime_with_milliseconds(self._created_at)
 
+    @property
+    def create_time(self):
+        return iso_8601_datetime_with_milliseconds(self._created_at)
+
 
 class RouteBackend(object):
     def __init__(self):
