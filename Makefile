@@ -35,6 +35,10 @@ test-only:
 
 test: lint test-only
 
+publish:
+	python setup.py sdist bdist_wheel
+	twine upload dist/*
+
 test_server:
 	@TEST_SERVER_MODE=true pytest -sv --cov=moto --cov-report xml ./tests/
 
